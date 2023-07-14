@@ -7,7 +7,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (PERCENTAGE,
                                  UnitOfElectricCurrent, UnitOfElectricPotential,
                                  UnitOfFrequency, UnitOfTime, UnitOfPower,
-                                 UnitOfTemperature)
+                                 UnitOfTemperature, UnitOfEnergy)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -111,8 +111,16 @@ class InAmpSensorEntity(AmpSensorEntity):
     _attr_icon = "mdi:transmission-tower-import"
 
 
-class SolarWattsSensorEntity(WattsSensorEntity):
+class SolarDeciwattsSensorEntity(BaseSensorEntity):
     _attr_icon = "mdi:mdi:solar-power"
+    _attr_device_class = SensorDeviceClass.ENERGY
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_native_unit_of_measurement = UnitOfEnergy.WATT_HOUR
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+
+    def _update_value(self, val: Any) -> bool:
+        return super()._update_value(int(val) / 10)
+
 
 
 class FrequencySensorEntity(BaseSensorEntity):
