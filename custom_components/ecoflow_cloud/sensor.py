@@ -6,7 +6,7 @@ from typing import Any, Mapping, OrderedDict
 from homeassistant.components.sensor import (SensorDeviceClass, SensorStateClass, SensorEntity)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (PERCENTAGE,
-                                 UnitOfElectricPotential, UnitOfElectricCurrent, UnitOfTime, UnitOfEnergy, UnitOfPower)
+                                 UnitOfElectricCurrent, UnitOfElectricPotential, UnitOfEnergy, UnitOfPower, UnitOfTemperature, UnitOfTime)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
