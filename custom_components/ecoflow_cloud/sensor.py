@@ -6,9 +6,7 @@ from typing import Any, Mapping, OrderedDict
 from homeassistant.components.sensor import (SensorDeviceClass, SensorStateClass, SensorEntity)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (PERCENTAGE,
-                                 UnitOfElectricCurrent, UnitOfElectricPotential,
-                                 UnitOfFrequency, UnitOfTime, UnitOfPower,
-                                 UnitOfTemperature, UnitOfEnergy)
+                                 UnitOfElectricPotential, UnitOfElectricCurrent, UnitOfTime, UnitOfEnergy, UnitOfPower)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -96,6 +94,11 @@ class WattsSensorEntity(BaseSensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = 0
 
+class EnergySensorEntity(BaseSensorEntity):
+    _attr_device_class = SensorDeviceClass.ENERGY
+    _attr_native_unit_of_measurement = UnitOfEnergy.WATT_HOUR
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_native_value = 0
 
 class DeciwattsSensorEntity(WattsSensorEntity):
     def _update_value(self, val: Any) -> bool:
@@ -124,6 +127,11 @@ class InVoltSensorEntity(VoltSensorEntity):
 class InAmpSensorEntity(AmpSensorEntity):
     _attr_icon = "mdi:transmission-tower-import"
 
+class InEnergySensorEntity(EnergySensorEntity):
+    _attr_icon = "mdi:transmission-tower-import"
+
+class OutEnergySensorEntity(EnergySensorEntity):
+    _attr_icon = "mdi:transmission-tower-export"
 
 class FrequencySensorEntity(BaseSensorEntity):
     _attr_device_class = SensorDeviceClass.FREQUENCY
