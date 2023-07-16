@@ -38,6 +38,9 @@ class FanSensorEntity(BaseSensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_icon = "mdi:fan"
 
+class MiscSensorEntity(BaseSensorEntity):
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_state_class = SensorStateClass.MEASUREMENT
 
 class LevelSensorEntity(BaseSensorEntity):
     _attr_device_class = SensorDeviceClass.BATTERY
@@ -91,12 +94,28 @@ class DecivoltSensorEntity(BaseSensorEntity):
         return super()._update_value(int(val) / 10)
 
 
+class CentivoltSensorEntity(DecivoltSensorEntity):
+    def _update_value(self, val: Any) -> bool:
+        return super()._update_value(int(val) / 10)
+
+
 class AmpSensorEntity(BaseSensorEntity):
     _attr_device_class = SensorDeviceClass.CURRENT
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_native_unit_of_measurement = UnitOfElectricCurrent.MILLIAMPERE
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = 0
+
+
+class DeciampSensorEntity(BaseSensorEntity):
+    _attr_device_class = SensorDeviceClass.CURRENT
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_native_unit_of_measurement = UnitOfElectricCurrent.AMPERE
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_value = 0
+
+    def _update_value(self, val: Any) -> bool:
+        return super()._update_value(int(val) / 10)
 
 
 class WattsSensorEntity(BaseSensorEntity):
@@ -138,11 +157,14 @@ class InVoltSensorEntity(VoltSensorEntity):
 class InAmpSensorEntity(AmpSensorEntity):
     _attr_icon = "mdi:transmission-tower-import"
 
+
 class InEnergySensorEntity(EnergySensorEntity):
     _attr_icon = "mdi:transmission-tower-import"
 
+
 class OutEnergySensorEntity(EnergySensorEntity):
     _attr_icon = "mdi:transmission-tower-export"
+
 
 class FrequencySensorEntity(BaseSensorEntity):
     _attr_device_class = SensorDeviceClass.FREQUENCY
