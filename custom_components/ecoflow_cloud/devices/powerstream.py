@@ -7,7 +7,7 @@ from ..sensor import (
     AmpSensorEntity, CentivoltSensorEntity, DeciampSensorEntity,
     DecicelsiusSensorEntity, DecihertzSensorEntity, DeciwattsSensorEntity,
     DecivoltSensorEntity, InWattsSolarSensorEntity, LevelSensorEntity,
-    MiscSensorEntity, RemainSensorEntity,
+    MiscSensorEntity, RemainSensorEntity, StatusSensorEntity,
 )
 # from ..number import MinBatteryLevelEntity, MaxBatteryLevelEntity
 # from ..select import DictSelectEntity
@@ -35,7 +35,7 @@ class PowerStream(BaseDevice):
             MiscSensorEntity(client, "pv2_warning_code", "Solar 2 Warning Code", False),
             MiscSensorEntity(client, "pv2_status", "Solar 2 Status", False),
 
-            MiscSensorEntity(client, "bpType", "Battery Type", False),
+            MiscSensorEntity(client, "bp_type", "Battery Type", False),
             LevelSensorEntity(client, "bat_soc", "Battery Charge"),
             DeciwattsSensorEntity(client, "bat_input_watts", "Battery Input Watts"),
             DecivoltSensorEntity(client, "bat_input_volt", "Battery Input Potential"),
@@ -77,6 +77,8 @@ class PowerStream(BaseDevice):
             MiscSensorEntity(client, "wireless_warning_code", "Wireless Warning Code", False),
             MiscSensorEntity(client, "inv_brightness", "LED Brightness", False),
             MiscSensorEntity(client, "heartbeat_frequency", "Heartbeat Frequency", False),
+
+            StatusSensorEntity(client)
         ]
 
 

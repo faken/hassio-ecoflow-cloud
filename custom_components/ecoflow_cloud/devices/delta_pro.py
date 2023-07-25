@@ -5,7 +5,7 @@ from ..number import ChargingPowerEntity, MaxBatteryLevelEntity, MinBatteryLevel
     MaxGenStopLevelEntity
 from ..select import DictSelectEntity, TimeoutDictSelectEntity
 from ..sensor import LevelSensorEntity, WattsSensorEntity, RemainSensorEntity, TempSensorEntity, \
-    CyclesSensorEntity, InWattsSensorEntity, OutWattsSensorEntity, VoltSensorEntity, InWattsSolarSensorEntity, \
+    CyclesSensorEntity, InWattsSensorEntity, OutWattsSensorEntity, OutWattsDcSensorEntity, VoltSensorEntity, InWattsSolarSensorEntity, \
     StatusSensorEntity, InEnergySensorEntity, OutEnergySensorEntity
 from ..switch import BeeperEntity, EnabledEntity
 
@@ -21,7 +21,7 @@ class DeltaPro(BaseDevice):
             InWattsSolarSensorEntity(client, "mppt.inWatts", const.SOLAR_IN_POWER),
 
             OutWattsSensorEntity(client, "inv.outputWatts", const.AC_OUT_POWER),
-            OutWattsSensorEntity(client, "mppt.outWatts", const.DC_OUT_POWER),
+            OutWattsDcSensorEntity(client, "mppt.outWatts", const.DC_OUT_POWER),
             # OutWattsSensorEntity(client, "pd.carWatts", const.DC_OUT_POWER),
 
             OutWattsSensorEntity(client, "mppt.carOutWatts", const.DC_CAR_OUT_POWER),
@@ -48,6 +48,7 @@ class DeltaPro(BaseDevice):
             VoltSensorEntity(client, "bmsMaster.minCellVol", const.MIN_CELL_VOLT, False),
             VoltSensorEntity(client, "bmsMaster.maxCellVol", const.MAX_CELL_VOLT, False),
 
+            # https://github.com/tolwi/hassio-ecoflow-cloud/discussions/87
             InEnergySensorEntity(client, "pd.chgSunPower", const.SOLAR_IN_ENERGY),
             InEnergySensorEntity(client, "pd.chgPowerAc", const.CHARGE_AC_ENERGY),
             InEnergySensorEntity(client, "pd.chgPowerDc", const.CHARGE_DC_ENERGY),
@@ -75,7 +76,7 @@ class DeltaPro(BaseDevice):
             MinBatteryLevelEntity(client, "ems.minDsgSoc", const.MIN_DISCHARGE_LEVEL, 0, 30,
                                   lambda value: {"moduleType": 0, "operateType": "TCP",
                                                  "params": {"id": 51, "minDsgSoc": value}}),
-            MaxBatteryLevelEntity(client, "pd.bpPowerSoc", const.BACKUP_RESERVE_LEVEL, 10, 85,
+            MaxBatteryLevelEntity(client, "pd.bpPowerSoc", const.BACKUP_RESERVE_LEVEL, 5, 100,
                                   lambda value: {"moduleType": 0, "operateType": "TCP",
                                                  "params": {"isConfig": 1, "bpPowerSoc": int(value), "minDsgSoc": 0, "maxChgSoc": 0, "id": 94}}),
             MinGenStartLevelEntity(client, "ems.minOpenOilEbSoc", const.GEN_AUTO_START_LEVEL, 0, 30,

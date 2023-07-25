@@ -1,4 +1,5 @@
-from typing import Any, Callable
+import inspect
+from typing import Any, Callable, Optional
 
 from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
@@ -52,10 +53,10 @@ class EcoFlowDictEntity(EcoFlowAbstractEntity):
 
     async def async_added_to_hass(self):
         await super().async_added_to_hass()
-        d = self._client.data.params_observable().subscribe(self.__updated)
+        d = self._client.data.params_observable().subscribe(self._updated)
         self.async_on_remove(d.dispose)
 
-    def __updated(self, data: dict[str, Any]):
+    def _updated(self, data: dict[str, Any]):
         if self._mqtt_key in data:
             self._attr_available = True
             if self._auto_enable:
@@ -70,13 +71,18 @@ class EcoFlowDictEntity(EcoFlowAbstractEntity):
 
 class EcoFlowBaseCommandEntity(EcoFlowDictEntity):
     def __init__(self, client: EcoflowMQTTClient, mqtt_key: str, title: str,
-                 command: Callable[[int], dict[str, any]] | None, enabled: bool = True, auto_enable: bool = False):
+                 command: Callable[[int, Optional[dict[str, Any]]], dict[str, Any]] | None,
+                 enabled: bool = True, auto_enable: bool = False):
         super().__init__(client, mqtt_key, title, enabled, auto_enable)
         self._command = command
 
     def command_dict(self, value: int) -> dict[str, any] | None:
         if self._command:
-            return self._command(value)
+            p_count = len(inspect.signature(self._command).parameters)
+            if p_count == 1:
+                return self._command(value)
+            elif p_count == 2:
+                return self._command(value, self._client.data.params)
         else:
             return None
 
